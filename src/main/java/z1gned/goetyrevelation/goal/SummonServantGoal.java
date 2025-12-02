@@ -1,7 +1,6 @@
 package z1gned.goetyrevelation.goal;
 
 import com.Polarice3.Goety.common.entities.ModEntityType;
-import com.Polarice3.Goety.common.entities.ally.Summoned;
 import com.Polarice3.Goety.common.entities.ally.spider.CaveSpiderServant;
 import com.Polarice3.Goety.common.entities.ally.undead.WraithServant;
 import com.Polarice3.Goety.common.entities.ally.undead.skeleton.SkeletonServant;
@@ -25,6 +24,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import z1gned.goetyrevelation.entitiy.PhantomServant;
+import z1gned.goetyrevelation.util.ISummoned;
+import z1gned.goetyrevelation.util.SpiderServantAdapter;
+import z1gned.goetyrevelation.util.SummonedAdapter;
 import z1gned.goetyrevelation.util.ApollyonAbilityHelper;
 
 import java.util.function.Predicate;
@@ -90,17 +92,19 @@ public class SummonServantGoal extends CastingGoal {
                         apostle.level().addFreshEntity(summonCirclex);
                     } else {
                         BlockPos blockpos = apostle.blockPosition();
-                        Summoned summonedentity = new Inferno(ModEntityType.INFERNO.get(), apostle.level());
+                        ISummoned summonedentity;
                         if (s == 7) {
-                            summonedentity = new HuskServant(ModEntityType.HUSK_SERVANT.get(), apostle.level());
+                            summonedentity = new SummonedAdapter(new HuskServant(ModEntityType.HUSK_SERVANT.get(), apostle.level()));
                         } else if (s == 2) {
-                            summonedentity = new CaveSpiderServant(ModEntityType.CAVE_SPIDER_SERVANT.get(), apostle.level());
+                            summonedentity = new SpiderServantAdapter(new CaveSpiderServant(ModEntityType.CAVE_SPIDER_SERVANT.get(), apostle.level()));
                         } else if (s == 9) {
-                            summonedentity = new WraithServant(ModEntityType.WRAITH_SERVANT.get(), apostle.level());
+                            summonedentity = new SummonedAdapter(new WraithServant(ModEntityType.WRAITH_SERVANT.get(), apostle.level()));
                         } else if (s == 3) {
-                            summonedentity = new SkeletonServant(ModEntityType.SKELETON_SERVANT.get(), apostle.level());
+                            summonedentity = new SummonedAdapter(new SkeletonServant(ModEntityType.SKELETON_SERVANT.get(), apostle.level()));
                         } else if (s == 8) {
-                            summonedentity = new StrayServant(ModEntityType.STRAY_SERVANT.get(), apostle.level());
+                            summonedentity = new SummonedAdapter(new StrayServant(ModEntityType.STRAY_SERVANT.get(), apostle.level()));
+                        } else {
+                            summonedentity = new SummonedAdapter(new Inferno(ModEntityType.INFERNO.get(), apostle.level()));
                         }
                         summonedentity.moveTo(blockpos, 0.0F, 0.0F);
                         summonedentity.setTrueOwner(apostle);
@@ -115,7 +119,7 @@ public class SummonServantGoal extends CastingGoal {
                         phantomServant.finalizeSpawn(serverLevel, apostle.level().getCurrentDifficultyAt(blockpos.above(2)), MobSpawnType.MOB_SUMMONED, null, null);
                         phantomServant.setTarget(livingentity);
 
-                        SummonCircle summonCircle = new SummonCircle(apostle.level(), blockpos, summonedentity, false, true, apostle);
+                        SummonCircle summonCircle = new SummonCircle(apostle.level(), blockpos, summonedentity.getEntity(), false, true, apostle);
                         if (s == 4) {
                             summonCircle = new SummonCircle(apostle.level(), blockpos, phantomServant, false, true, apostle);
                         }
@@ -132,17 +136,19 @@ public class SummonServantGoal extends CastingGoal {
                         blockpos$mutablex.setX(blockpos$mutablex.getX() + r.nextInt(5) - r.nextInt(5));
                         blockpos$mutablex.setY((int)BlockFinder.moveDownToGround(apostle));
                         blockpos$mutablex.setZ(blockpos$mutablex.getZ() + r.nextInt(5) - r.nextInt(5));
-                        Summoned summonedentityxx = new Inferno(ModEntityType.INFERNO.get(), apostle.level());
+                        ISummoned summonedentityxx;
                         if (s == 7) {//饥荒
-                            summonedentityxx = new HuskServant(ModEntityType.HUSK_SERVANT.get(), apostle.level());
+                            summonedentityxx = new SummonedAdapter( new HuskServant(ModEntityType.HUSK_SERVANT.get(), apostle.level()));
                         } else if (s == 2) {//毒蝎
-                            summonedentityxx = new CaveSpiderServant(ModEntityType.CAVE_SPIDER_SERVANT.get(), apostle.level());
+                            summonedentityxx = new SpiderServantAdapter(new CaveSpiderServant(ModEntityType.CAVE_SPIDER_SERVANT.get(), apostle.level()));
                         } else if (s == 9) {//骇人
-                            summonedentityxx = new WraithServant(ModEntityType.WRAITH_SERVANT.get(), apostle.level());
+                            summonedentityxx =  new SummonedAdapter(new WraithServant(ModEntityType.WRAITH_SERVANT.get(), apostle.level()));
                         } else if (s == 3) {//漆黑
-                            summonedentityxx = new SkeletonServant(ModEntityType.SKELETON_SERVANT.get(), apostle.level());
+                            summonedentityxx = new SummonedAdapter( new SkeletonServant(ModEntityType.SKELETON_SERVANT.get(), apostle.level()));
                         } else if (s == 8) {//寒冬
-                            summonedentityxx = new StrayServant(ModEntityType.STRAY_SERVANT.get(), apostle.level());
+                            summonedentityxx =  new SummonedAdapter(new StrayServant(ModEntityType.STRAY_SERVANT.get(), apostle.level()));
+                        } else {
+                             summonedentityxx = new SummonedAdapter(new Inferno(ModEntityType.INFERNO.get(), apostle.level()));
                         }
                         Malghast malghast = new Malghast(ModEntityType.MALGHAST.get(), apostle.level());
                         malghast.setTrueOwner(apostle);
@@ -161,7 +167,7 @@ public class SummonServantGoal extends CastingGoal {
                         summonedentityxx.setLimitedLife(60 * (90 + apostle.level().random.nextInt(180)));
                         summonedentityxx.finalizeSpawn(serverLevel, apostle.level().getCurrentDifficultyAt(blockpos$mutablex), MobSpawnType.MOB_SUMMONED, null, null);
                         summonedentityxx.setTarget(livingentity);
-                        SummonCircle summonCirclexx = new SummonCircle(apostle.level(), blockpos$mutablex, summonedentityxx, false, true, apostle);
+                        SummonCircle summonCirclexx = new SummonCircle(apostle.level(), blockpos$mutablex, summonedentityxx.getEntity(), false, true, apostle);
                         if (s == 1 && apostle.isSecondPhase()) {
                             summonCirclexx = new SummonCircle(apostle.level(), blockpos$mutablex, malghast, false, true, apostle);
                         } else if (s == 4) {

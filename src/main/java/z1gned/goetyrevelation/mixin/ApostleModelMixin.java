@@ -28,7 +28,6 @@ public class ApostleModelMixin<T extends Apostle> extends CultistModel<T> {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         this.nose.visible = !entity.isSecondPhase();
         this.hat.visible = false;
-        this.halo1.zRot = entity.getSpin();
         this.hat2.visible = ((ApollyonAbilityHelper) entity).allTitlesApostle_1_20_1$isApollyon() || (!entity.isSecondPhase() || !MobUtil.healthIsHalved(entity));
     }
 

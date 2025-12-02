@@ -2,7 +2,6 @@ package z1gned.goetyrevelation.mixin;
 
 import com.Polarice3.Goety.common.entities.ModEntityType;
 import com.Polarice3.Goety.common.entities.ally.MagmaCubeServant;
-import com.Polarice3.Goety.common.entities.ally.Summoned;
 import com.Polarice3.Goety.common.entities.ally.spider.SpiderServant;
 import com.Polarice3.Goety.common.entities.ally.undead.skeleton.SkeletonServant;
 import com.Polarice3.Goety.common.entities.ally.undead.zombie.HuskServant;
@@ -34,9 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import z1gned.goetyrevelation.entitiy.PhantomServant;
 import z1gned.goetyrevelation.entitiy.WitherServant;
-import z1gned.goetyrevelation.util.ATAHelper;
-import z1gned.goetyrevelation.util.ApollyonAbilityHelper;
-import z1gned.goetyrevelation.util.PlayerAbilityHelper;
+import z1gned.goetyrevelation.util.*;
 
 @Mixin(ObsidianMonolith.class)
 public abstract class ObsidianMonolithMixin extends AbstractMonolith implements ApollyonAbilityHelper {
@@ -142,7 +139,7 @@ public abstract class ObsidianMonolithMixin extends AbstractMonolith implements 
         int i = -1;
         int random = this.level().random.nextInt(12);
         Apostle apostle = (Apostle) this.getTrueOwner();
-        Summoned summoned = new ZPiglinServant(ModEntityType.ZPIGLIN_SERVANT.get(), level);
+        ISummoned summoned = new SummonedAdapter(new ZPiglinServant(ModEntityType.ZPIGLIN_SERVANT.get(), level));;
         LivingEntity target = null;
 
         if (apostle != null) {
@@ -157,32 +154,33 @@ public abstract class ObsidianMonolithMixin extends AbstractMonolith implements 
                 if (s == 8) {
                     ZPiglinServant zPiglinServant = new ZPiglinServant(ModEntityType.ZPIGLIN_SERVANT.get(), level);
                     zPiglinServant.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.FROZEN_BLADE.get()));
-                    summoned = zPiglinServant;
+                    summoned = new SummonedAdapter(zPiglinServant);
                 }
                 if (bl) {
                     if (this.level().random.nextFloat() > 0.25F) {
-                        summoned = new ZPiglinServant(ModEntityType.ZPIGLIN_BRUTE_SERVANT.get(), level);
+                        summoned = new SummonedAdapter(new ZPiglinServant(ModEntityType.ZPIGLIN_BRUTE_SERVANT.get(), level));
                     }
                 } else if (s == 1) {
-                    summoned = new ZPiglinServant(ModEntityType.ZPIGLIN_BRUTE_SERVANT.get(), level);
+                    summoned = new SummonedAdapter(new ZPiglinServant(ModEntityType.ZPIGLIN_BRUTE_SERVANT.get(), level));
                 } else if (s == 6) {
                     MagmaCubeServant magmaCubeServant = new MagmaCubeServant(ModEntityType.MAGMA_CUBE_SERVANT.get(), level);
                     magmaCubeServant.setSize(4, true);
-                    summoned = magmaCubeServant;
+                    summoned = new SummonedAdapter(magmaCubeServant);
                 }
             } else {
                 if (s == 7) {
-                    summoned = new HuskServant(ModEntityType.HUSK_SERVANT.get(), level);
+                    summoned = new SummonedAdapter(new HuskServant(ModEntityType.HUSK_SERVANT.get(), level));
                 } else if (s == 2) {
-                    summoned = new SpiderServant(ModEntityType.SPIDER_SERVANT.get(), level);
+                    summoned = new SpiderServantAdapter(new SpiderServant(ModEntityType.SPIDER_SERVANT.get(), level));
                 } else if (s == 3) {
-                    summoned = new SkeletonServant(ModEntityType.WITHER_SKELETON_SERVANT.get(), level);
-                    summoned.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
+                    var skeleton = new SkeletonServant(ModEntityType.WITHER_SKELETON_SERVANT.get(), level);
+                    skeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
+                    summoned = new SummonedAdapter(skeleton);
                 }
             }
         }
 
-        BlockPos blockPos = BlockFinder.SummonRadius(this.blockPosition(), summoned, level);
+        BlockPos blockPos = BlockFinder.SummonRadius(this.blockPosition(), summoned.getEntity(), level);
         summoned.moveTo(blockPos, 0.0F, 0.0F);
         summoned.setTrueOwner(apostle);
         summoned.setLimitedLife(MobUtil.getSummonLifespan(level));
@@ -196,7 +194,7 @@ public abstract class ObsidianMonolithMixin extends AbstractMonolith implements 
         phantomServant.setTarget(target);
 
         int s = i == 12 ? random : i;
-        SummonCircle summonCircle = new SummonCircle(level, blockPos, summoned, false, true, apostle);
+        SummonCircle summonCircle = new SummonCircle(level, blockPos, summoned.getEntity(), false, true, apostle);
         if (s == 4) {
             summonCircle = new SummonCircle(level, blockPos, phantomServant, false, true, apostle);
         }

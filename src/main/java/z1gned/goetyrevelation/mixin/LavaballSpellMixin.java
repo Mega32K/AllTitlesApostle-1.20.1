@@ -2,6 +2,7 @@ package z1gned.goetyrevelation.mixin;
 
 import com.Polarice3.Goety.common.entities.projectiles.HellBlast;
 import com.Polarice3.Goety.common.magic.Spell;
+import com.Polarice3.Goety.common.magic.SpellStat;
 import com.Polarice3.Goety.common.magic.spells.nether.LavaballSpell;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -26,7 +27,7 @@ public abstract class LavaballSpellMixin extends Spell {
     ItemStack allTitlesApostle_1_20_1$stack;
 
     @Inject(at = @At("HEAD"), method = "SpellResult", remap = false)
-    private void getSpellUser(ServerLevel worldIn, LivingEntity entityLiving, ItemStack staff, CallbackInfo ci) {
+    private void getSpellUser(ServerLevel worldIn, LivingEntity entityLiving, ItemStack staff, SpellStat spellStat, CallbackInfo ci) {
         this.allTitlesApostle_1_20_1$user = (Player) entityLiving;
         this.allTitlesApostle_1_20_1$stack = staff;
     }

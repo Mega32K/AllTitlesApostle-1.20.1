@@ -27,9 +27,4 @@ public class WitherQuietusSpell extends Spell {
     public int defaultSpellCooldown() {
         return 0;
     }
-
-    @Override
-    public void SpellResult(ServerLevel serverLevel, LivingEntity livingEntity, ItemStack itemStack) {
-
-    }
 }
