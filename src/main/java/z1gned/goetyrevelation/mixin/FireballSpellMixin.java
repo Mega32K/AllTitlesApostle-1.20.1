@@ -2,6 +2,7 @@ package z1gned.goetyrevelation.mixin;
 
 import com.Polarice3.Goety.common.entities.projectiles.HellBolt;
 import com.Polarice3.Goety.common.magic.Spell;
+import com.Polarice3.Goety.common.magic.SpellStat;
 import com.Polarice3.Goety.common.magic.spells.nether.FireballSpell;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -23,7 +24,7 @@ public abstract class FireballSpellMixin extends Spell {
     Player allTitlesApostle_1_20_1$user;
 
     @Inject(at = @At("HEAD"), method = "SpellResult", remap = false)
-    private void getSpellUser(ServerLevel worldIn, LivingEntity entityLiving, ItemStack staff, CallbackInfo ci) {
+    private void getSpellUser(ServerLevel worldIn, LivingEntity entityLiving, ItemStack staff, SpellStat spellStat, CallbackInfo ci) {
         this.allTitlesApostle_1_20_1$user = (Player) entityLiving;
     }
 
@@ -38,7 +39,7 @@ public abstract class FireballSpellMixin extends Spell {
     }
 
     @Inject(at = @At("HEAD"), method = "SpellResult", cancellable = true, remap = false)
-    private void createFireball(ServerLevel worldIn, LivingEntity entityLiving, ItemStack staff, CallbackInfo ci) {
+    private void createFireball(ServerLevel worldIn, LivingEntity entityLiving, ItemStack staff, SpellStat spellStat, CallbackInfo ci) {
         if (this.rightStaff(staff) && ATAHelper.hasHalo(this.allTitlesApostle_1_20_1$user)) {
             ci.cancel();
             Vec3 vector3d = entityLiving.getViewVector(1.0F);

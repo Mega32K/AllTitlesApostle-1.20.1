@@ -35,8 +35,6 @@ import java.util.Iterator;
 
 @Mixin(HauntedSkullSpell.class)
 public abstract class HauntedSkullSpellMixin extends SummonSpell {
-    @Shadow public abstract void commonResult(ServerLevel worldIn, LivingEntity caster);
-
     @Unique
     ItemStack stack;
 
@@ -107,10 +105,9 @@ public abstract class HauntedSkullSpellMixin extends SummonSpell {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "commonResult", cancellable = true, remap = false)
-    private void result(ServerLevel worldIn, LivingEntity caster, CallbackInfo ci) {
+    @Override
+    public void commonResult(ServerLevel worldIn, LivingEntity caster) {
         if (ATAHelper.hasHalo(caster) && this.stack.is(ModItems.NETHER_STAFF.get())) {
-            ci.cancel();
             if (this.isShifting(caster)) {
 
                 for (Entity entity : worldIn.getAllEntities()) {
@@ -125,7 +122,8 @@ public abstract class HauntedSkullSpellMixin extends SummonSpell {
 
                 worldIn.playSound(null, caster.getX(), caster.getY(), caster.getZ(), SoundEvents.EVOKER_CAST_SPELL, this.getSoundSource(), 1.0F, 1.0F);
             }
+            return;
         }
+        super.commonResult(worldIn, caster);
     }
-
 }

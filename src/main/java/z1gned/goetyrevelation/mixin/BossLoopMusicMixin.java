@@ -22,7 +22,7 @@ public class BossLoopMusicMixin {
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/SoundManager;queueTickingSound(Lnet/minecraft/client/resources/sounds/TickableSoundInstance;)V", ordinal = 0), method = "tick")
     private void setPost(SoundManager instance, TickableSoundInstance p_120373_) {
         if (this.mobEntity instanceof Apostle apostle && ((ApollyonAbilityHelper) apostle).allTitlesApostle_1_20_1$isApollyon()) {
-            instance.queueTickingSound(new PostBossMusic(ModMain.APOLLYON_THEME_POST.get(), this.mobEntity));
+            instance.queueTickingSound(new PostBossMusic(ModMain.APOLLYON_THEME_POST.get(), this.mobEntity, 1.0f, 1.0f));
         } else {
             instance.queueTickingSound(p_120373_);
         }
